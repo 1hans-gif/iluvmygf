@@ -9,10 +9,13 @@
   * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
-    width:390px; height:844px;
-    background:#FFFFFF;
-    overflow:hidden; position:relative;
-    font-family:'Caveat',cursive;
+    margin:0;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    position:relative;
+    font-family:'Caveat', cursive;
+    background:#ffffff;
   }
 
   .page {
@@ -80,6 +83,7 @@
   .grid-header-dot { width:3px; height:3px; border-radius:50%; background:#C0392B; opacity:0.5; }
   .photo-grid { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:8px; width:calc(100% - 48px); margin:0 auto; background:transparent; flex-shrink:0; }
   .photo-cell { background:#FFFFFF; overflow:hidden; position:relative; aspect-ratio:4/5; border:2px solid hsl(0, 68%, 31%); border-radius:0; opacity:0; transform:translateY(20px) scale(0.96); transition:opacity 0.65s ease, transform 0.65s ease; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+  .photo-cell img{width:100%; height:100%; object-fit:cover;}
   .photo-cell.show { opacity:1; transform:scale(1); }
   .photo-cell-inner { display:flex; flex-direction:column; align-items:center; gap:8px; }
   .photo-icon { font-size:36px; opacity:0.18; }
@@ -120,6 +124,7 @@
   .btn-slide-final.show { opacity:1; }
   .swipe-hint { position:absolute; bottom:110px; right:30px; font-size:13px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(192,57,43,0.4); animation:swipeFade 3s 1.5s ease forwards; opacity:0; pointer-events:none; font-family:'Caveat',cursive; }
   @keyframes swipeFade { 0%{opacity:0;transform:translateX(-5px)} 20%{opacity:1;transform:translateX(0)} 70%{opacity:1} 100%{opacity:0} }
+  .slide-card-photo img{width:100%; height:100%; object-fit:contain;}
 
   /* ═══════════════════════ PAGE 5 ═══════════════════════ */
   #page5 { background:#FFFFFF; }
@@ -791,14 +796,14 @@
 
   // ── MUSIC — starts on first tap ──
   const music = document.getElementById('bgMusic');
-  music.volume = 0;
+  music.volume = 0.15;
   document.getElementById('page1').addEventListener('click', () => {
     music.play().catch(() => {});
     let vol = 0;
     const fade = setInterval(() => {
-      vol = Math.min(vol + 0.04, 0.35);
+      vol = Math.min(vol + 0.02, 0.15);
       music.volume = vol;
-      if (vol >= 0.35) clearInterval(fade);
+      if (vol >= 0.15) clearInterval(fade);
     }, 150);
   }, { once: true });
 
