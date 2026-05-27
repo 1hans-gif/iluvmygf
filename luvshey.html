@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Surprise</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    width:390px; height:844px;
+    background:#FFFFFF;
+    overflow:hidden; position:relative;
+    font-family:'Caveat',cursive;
+  }
+
+  .page {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity 0.5s ease;
+  }
+  .page.hidden  { opacity:0; pointer-events:none; }
+  .page.visible { opacity:1; pointer-events:all; }
+
+  .p { position:absolute; border-radius:50%; pointer-events:none; }
+
+  @keyframes pFloat1 {
+    0%,100% { transform:translateY(0) scale(1); }
+    50%     { transform:translateY(-18px) scale(1.15); }
+  }
+  @keyframes pFloat2 {
+    0%,100% { transform:translateY(0) scale(1); }
+    40%     { transform:translateY(-12px) scale(0.85); }
+    80%     { transform:translateY(-6px) scale(1.05); }
+  }
+  @keyframes pFloat3 {
+    0%,100% { transform:translateY(0) scale(1); }
+    30%     { transform:translateY(-22px) scale(1.2); }
+    70%     { transform:translateY(-8px) scale(0.9); }
+  }
+  @keyframes pBlink {
+    0%,100% { opacity:var(--op); }
+    50%     { opacity:calc(var(--op) * 0.15); }
+  }
+
+  /* ═══════════════════════ PAGE 1 ═══════════════════════ */
+  #page1 { background:#FFFFFF; }
+  .center { display:flex; flex-direction:column; align-items:center; text-align:center; z-index:10; }
+  .top-line { width:0; height:1px; background:#C0392B; margin-bottom:28px; opacity:0; animation:lineGrow 0.9s 0.3s cubic-bezier(0.4,0,0.2,1) forwards; }
+  @keyframes lineGrow { to { width:36px; opacity:1; } }
+  .eyebrow { font-size:16px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:#C0392B; opacity:0; animation:fadeUp 1s 0.8s ease forwards; }
+  .title-main { font-family:'Caveat',cursive; font-size:56px; font-weight:700; color:#1A1212; letter-spacing:-0.5px; line-height:1.05; margin-top:10px; white-space:nowrap; opacity:0; animation:fadeUp 1.1s 1.3s ease forwards; }
+  .title-main em { font-style:italic; color:#C0392B; }
+  .sub-b { font-family:'Caveat',cursive; font-size:22px; font-style:italic; color:#1B1E23; margin-top:2px; opacity:0; animation:fadeUp 1s 2.0s ease forwards; }
+  .dot-sep { width:5px; height:5px; border-radius:50%; background:#C0392B; margin:26px auto; opacity:0; animation:fadeUp 0.7s 2.6s ease forwards; }
+  .tap-hint { font-size:15px; font-weight:400; color:#1B1E23; letter-spacing:0.2em; text-transform:uppercase; opacity:0; animation:fadeUp 1s 3.2s ease forwards; cursor:pointer; }
+  .bot-line { width:0; height:1px; background:#C0392B; margin-top:28px; opacity:0; animation:lineGrow 0.9s 3.8s cubic-bezier(0.4,0,0.2,1) forwards; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ═══════════════════════ PAGE 2 ═══════════════════════ */
+  #page2 { background:#FFFFFF; }
+  .countdown-num {
+    font-family:'Caveat',cursive;
+    font-size:140px; font-weight:700;
+    color:#C0392B; line-height:1; letter-spacing:-3px;
+    z-index:10; opacity:0;
+    transition:opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
+    transform:scale(0.8);
+  }
+  .countdown-num.show { opacity:1; transform:scale(1); }
+  .countdown-num.exit { opacity:0; transform:scale(1.15); filter:blur(8px); }
+
+  /* ═══════════════════════ PAGE 3 ═══════════════════════ */
+  #page3 { background:#ffffff; align-items:flex-start; justify-content:flex-start; padding:0; }
+  .grid-page { width:390px; height:844px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#ffffff; gap:0; }
+  .grid-header { position:relative; z-index:10; padding:0 0 14px; display:flex; flex-direction:column; align-items:center; gap:4px; opacity:0; transition:opacity 0.6s ease, transform 0.6s ease; transform:translateY(-6px); pointer-events:none; width:100%; }
+  .grid-header.show { opacity:1; transform:translateY(0); }
+  .grid-header-eyebrow { font-size:16px; letter-spacing:0.2em; text-transform:uppercase; color:#C0392B; font-family:'Caveat',cursive; }
+  .grid-header-dot { width:3px; height:3px; border-radius:50%; background:#C0392B; opacity:0.5; }
+  .photo-grid { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:8px; width:calc(100% - 48px); margin:0 auto; background:transparent; flex-shrink:0; }
+  .photo-cell { background:#FFFFFF; overflow:hidden; position:relative; aspect-ratio:4/5; border:2px solid hsl(0, 68%, 31%); border-radius:0; opacity:0; transform:translateY(20px) scale(0.96); transition:opacity 0.65s ease, transform 0.65s ease; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+  .photo-cell.show { opacity:1; transform:scale(1); }
+  .photo-cell-inner { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .photo-icon { font-size:36px; opacity:0.18; }
+  .photo-cell-num { font-size:15px; letter-spacing:0.1em; text-transform:uppercase; color:#999; font-family:'Caveat',cursive; }
+  .grid-footer { position:relative; padding:16px 28px 0; display:flex; align-items:center; justify-content:space-between; background:transparent; opacity:0; transform:translateY(8px); transition:opacity 0.6s ease, transform 0.6s ease; z-index:10; width:100%; }
+  .grid-footer.show { opacity:1; transform:translateY(0); }
+  .grid-count { font-size:15px; font-weight:400; color:#a22626; letter-spacing:0.1em; text-transform:uppercase; font-family:'Caveat',cursive; }
+  .btn-continue { font-family:'Caveat',cursive; font-size:15px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#ffffff; background:#a12416; border:none; padding:11px 22px; border-radius:0; cursor:pointer; display:flex; align-items:center; gap:8px; box-shadow:0 4px 20px rgba(192,57,43,0.3); }
+  .btn-continue:active { transform:scale(0.97); }
+  .btn-arrow { font-size:16px; }
+
+  /* ═══════════════════════ PAGE 4 ═══════════════════════ */
+  #page4 { align-items:flex-start; justify-content:flex-start; padding:0; }
+  .slides-outer { width:390px; height:844px; overflow:hidden; position:relative; }
+  .slides-track { display:flex; width:calc(390px * 4); height:100%; transition:transform 0.45s cubic-bezier(0.4,0,0.2,1); }
+  .slide { width:390px; height:844px; flex-shrink:0; background:#fffefe; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; gap:28px; }
+  .slide-card { width:342px; display:flex; flex-direction:row; background:#fffdfd; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.1); border:1px solid #EEEBEB; }
+  .slide-card-photo { width:148px; flex-shrink:0; aspect-ratio:9/16; background:#ffffff; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .slide:nth-child(2) .slide-card-photo { background:#F5F0EF; }
+  .slide:nth-child(3) .slide-card-photo { background:#EFF0F5; }
+  .slide:nth-child(4) .slide-card-photo { background:#F2F5EF; }
+  .slide-card-photo::after { content:''; position:absolute; top:12%; right:0; bottom:12%; width:1px; background:linear-gradient(to bottom, transparent, rgba(192,57,43,0.35) 30%, rgba(192,57,43,0.35) 70%, transparent); }
+  .slide-photo-inner { display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .slide-photo-inner span:first-child { font-size:32px; opacity:0.18; }
+  .slide-photo-inner span:last-child { font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:#C0392B; opacity:0.4; font-family:'Caveat',cursive; }
+  .slide-card-text { flex:1; padding:28px 20px 24px 22px; display:flex; flex-direction:column; justify-content:center; }
+  .slide-tag { font-size:13px; letter-spacing:0.15em; text-transform:uppercase; color:#C0392B; margin-bottom:18px; opacity:0.75; font-family:'Caveat',cursive; }
+  .slide-quote-mark { font-family:'Caveat',cursive; font-size:38px; color:#C0392B; opacity:0.25; line-height:1; margin-bottom:4px; display:block; }
+  .slide-quote { font-family:'Caveat',cursive; font-size:17px; font-style:italic; font-weight:400; color:#2A1A1A; line-height:1.75; }
+  .slide-nav { width:342px; display:flex; align-items:center; gap:10px; }
+  .nav-btn { width:32px; height:32px; border:1px solid rgba(192,57,43,0.4); border-radius:50%; background:transparent; color:#C0392B; font-size:13px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:opacity 0.2s; font-family:'Caveat',cursive; }
+  .nav-btn:disabled { opacity:0.2; cursor:default; }
+  .nav-btn:not(:disabled):active { background:rgba(192,57,43,0.1); }
+  .nav-dots { display:flex; gap:6px; flex:1; justify-content:center; align-items:center; }
+  .nav-dot { height:4px; width:4px; border-radius:50%; background:rgba(0,0,0,0.15); transition:all 0.3s ease; }
+  .nav-dot.active { background:#C0392B; width:14px; border-radius:2px; }
+  .btn-slide-final { font-family:'Caveat',cursive; font-size:13px; letter-spacing:0.15em; text-transform:uppercase; color:#C0392B; background:transparent; border:none; cursor:pointer; flex-shrink:0; opacity:0; transition:opacity 0.5s ease; padding:0; white-space:nowrap; }
+  .btn-slide-final.show { opacity:1; }
+  .swipe-hint { position:absolute; bottom:110px; right:30px; font-size:13px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(192,57,43,0.4); animation:swipeFade 3s 1.5s ease forwards; opacity:0; pointer-events:none; font-family:'Caveat',cursive; }
+  @keyframes swipeFade { 0%{opacity:0;transform:translateX(-5px)} 20%{opacity:1;transform:translateX(0)} 70%{opacity:1} 100%{opacity:0} }
+
+  /* ═══════════════════════ PAGE 5 ═══════════════════════ */
+  #page5 { background:#FFFFFF; }
+  .closing-wrap { display:flex; flex-direction:column; align-items:center; text-align:center; z-index:10; padding:0 24px; }
+  .closing-line-top { width:0; height:1px; background:#C0392B; margin-bottom:30px; opacity:0; animation:closingLine 0.9s 0.3s cubic-bezier(0.4,0,0.2,1) forwards; }
+  @keyframes closingLine { to { width:36px; opacity:1; } }
+  .closing-eyebrow { font-size:14px; letter-spacing:0.22em; text-transform:uppercase; color:#C0392B; opacity:0; animation:fadeUpW 1s 0.8s ease forwards; font-family:'Caveat',cursive; }
+  .closing-title { font-family:'Caveat',cursive; font-size:54px; font-weight:700; font-style:italic; color:#1A1212; line-height:1.1; margin-top:14px; opacity:0; animation:fadeUpW 1.1s 1.3s ease forwards; white-space:nowrap; }
+  .closing-title em { color:#C0392B; font-style:italic; }
+  .closing-sub { font-family:'Caveat',cursive; font-size:20px; font-style:italic; color:#999; margin-top:12px; opacity:0; animation:fadeUpW 1s 2s ease forwards; }
+  .closing-dot { width:5px; height:5px; border-radius:50%; background:#C0392B; margin:26px auto; opacity:0; animation:fadeUpW 0.7s 2.6s ease forwards; }
+  .closing-btn { font-family:'Caveat',cursive; font-size:15px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:#FFFFFF; background:#831c11; border:none; padding:12px 26px; border-radius:0; cursor:pointer; display:flex; align-items:center; gap:8px; opacity:0; animation:fadeUpW 1s 3s ease forwards; box-shadow:0 4px 20px rgba(192,57,43,0.25); }
+  .closing-line-bot { width:0; height:1px; background:#C0392B; margin-top:26px; opacity:0; animation:closingLine 0.9s 3.6s cubic-bezier(0.4,0,0.2,1) forwards; }
+  @keyframes fadeUpW { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ═══════════════════════ PAGE 6 — CALENDAR ═══════════════════════ */
+  #page6 { background:#ffffff; align-items:center; justify-content:center; padding:0; }
+  .cal-wrap { width:390px; height:844px; position:relative; overflow:hidden; background:#ffffff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; }
+  .cal-wrap::before { content:''; position:absolute; inset:0; pointer-events:none; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); }
+  .cal-eyebrow { font-family:'Caveat',cursive; font-size:14px; letter-spacing:0.3em; text-transform:uppercase; color:#C0392B; opacity:0; margin-bottom:6px; position:relative; z-index:2; }
+  .cal-heading { font-family:'Caveat',cursive; font-size:42px; font-weight:700; color:#1A1212; line-height:1.05; text-align:center; opacity:0; margin-bottom:4px; position:relative; z-index:2; }
+  .cal-heading em { color:#C0392B; font-style:italic; }
+  .cal-divider { width:36px; height:1px; background:#C0392B; margin:14px 0 28px; opacity:0; position:relative; z-index:2; }
+  .mini-cal { width:312px; opacity:0; position:relative; z-index:2; }
+  .mini-cal-month { font-family:'Caveat',cursive; font-size:18px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#888; text-align:center; margin-bottom:14px; }
+  .mini-cal-row { display:grid; grid-template-columns:repeat(7,1fr); margin-bottom:4px; }
+  .cal-dow { font-family:'Caveat',cursive; font-size:13px; color:#BBB; text-align:center; padding-bottom:6px; letter-spacing:0.05em; }
+  .cal-day { font-family:'Caveat',cursive; font-size:18px; color:#666; text-align:center; padding:5px 0; position:relative; line-height:1; opacity:0; transform:translateY(8px) scale(0.8); transition:opacity 0.35s ease, transform 0.35s ease; }
+  .cal-day.appear { opacity:1; transform:translateY(0) scale(1); }
+  .cal-day.muted { color:#CCC; }
+  
+  /* ── 28 special ── */
+  .cal-day.highlight { color:#fff; font-weight:700; font-size:22px; z-index:1; }
+  .cal-day.highlight::before {
+    content:'';
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:40px; height:40px; border-radius:50%;
+    background:#C0392B; z-index:-1;
+    box-shadow:0 4px 16px rgba(192,57,43,0.4);
+  }
+  .cal-day.highlight.appear {
+    animation: highlightPop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards,
+               highlightGlow 2s 0.6s ease-in-out infinite;
+  }
+  @keyframes highlightPop {
+    0%   { transform:scale(0.3); opacity:0; }
+    60%  { transform:scale(1.3); opacity:1; }
+    100% { transform:scale(1); opacity:1; }
+  }
+  @keyframes highlightGlow {
+    0%,100% { filter:drop-shadow(0 0 6px rgba(192,57,43,0.5)); }
+    50%      { filter:drop-shadow(0 0 18px rgba(192,57,43,0.9)) drop-shadow(0 0 30px rgba(255,100,80,0.4)); }
+  }
+  /* sparkles around 28 */
+  .sparkle-ring { position:absolute; top:50%; left:50%; width:0; height:0; z-index:3; pointer-events:none; }
+  .sparkle-dot {
+    position:absolute; width:4px; height:4px; border-radius:50%;
+    background:#C0392B; opacity:0;
+  }
+
+  .cal-footer { margin-top:28px; text-align:center; z-index:2; position:relative; opacity:0; }
+  .cal-footer-line1 { font-family:'Caveat',cursive; font-size:22px; font-style:italic; color:#C0392B; }
+  .cal-footer-line2 { font-family:'Caveat',cursive; font-size:17px; font-style:italic; color:#AAA; margin-top:4px; }
+
+  /* continue button on cal page */
+  .cal-continue-btn {
+    margin-top:28px; font-family:'Caveat',cursive; font-size:15px; font-weight:600;
+    letter-spacing:0.15em; text-transform:uppercase;
+    color:#FFFFFF; background:#84261c; border:none; padding:11px 22px;
+    cursor:pointer; display:flex; align-items:center; gap:8px;
+    box-shadow:0 4px 20px rgba(192,57,43,0.3);
+    opacity:0; z-index:2; position:relative;
+  }
+  .cal-continue-btn.show { opacity:1; transition:opacity 0.6s ease; }
+  .cal-continue-btn:active { transform:scale(0.97); }
+
+  /* ═══════════════════════ PAGE 7 — CAKE ═══════════════════════ */
+  #page7 { background:#ffffff; align-items:flex-start; justify-content:flex-start; padding:0; }
+  .cake-scroll-page {
+    width:390px;
+    height:844px;
+    overflow:hidden;
+  }
+
+  .cake-section {
+    width:390px; height:844px;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    position:relative;
+    background:#ffffff;
+    gap:0;
+  }
+
+  /* Cake SVG area */
+  .cake-container {
+    position:relative; display:flex; flex-direction:column; align-items:center; z-index:10;
+  }
+  .cake-label { font-family:'Caveat',cursive; font-size:14px; letter-spacing:0.3em; text-transform:uppercase; color:#C0392B; margin-bottom:8px; opacity:0; }
+  .cake-title { font-family:'Caveat',cursive; font-size:44px; font-weight:700; color:#1A1212; line-height:1; margin-bottom:4px; opacity:0; }
+  .cake-title em { color:#C0392B; font-style:italic; }
+  .cake-sub { font-family:'Caveat',cursive; font-size:18px; font-style:italic; color:#999; margin-bottom:24px; opacity:0; }
+
+  .cake-svg-wrap { position:relative; width:220px; height:260px; opacity:0; }
+  
+  /* candle flames */
+  @keyframes flicker {
+    0%,100% { transform:scaleY(1) skewX(0deg); opacity:1; }
+    25%     { transform:scaleY(1.15) skewX(-4deg); opacity:0.9; }
+    50%     { transform:scaleY(0.88) skewX(3deg); opacity:1; }
+    75%     { transform:scaleY(1.1) skewX(-2deg); opacity:0.95; }
+  }
+  .flame { transform-origin:center bottom; animation:flicker 0.7s ease-in-out infinite; }
+  .flame:nth-child(2) { animation-delay:0.15s; animation-duration:0.85s; }
+  .flame:nth-child(3) { animation-delay:0.3s; animation-duration:0.65s; }
+
+  @keyframes cakeFloat {
+    0%,100% { transform:translateY(0px); }
+    50%     { transform:translateY(-6px); }
+  }
+  .cake-float { animation:cakeFloat 3s ease-in-out infinite; }
+
+  /* sparkles around cake */
+  @keyframes sparkFloat {
+    0%   { transform:translateY(0) scale(0); opacity:0; }
+    20%  { opacity:1; transform:translateY(-10px) scale(1); }
+    100% { transform:translateY(-40px) scale(0); opacity:0; }
+  }
+  .cake-sparkle {
+    position:absolute; font-size:14px; animation:sparkFloat 2s ease-out infinite;
+    pointer-events:none;
+  }
+
+  .cake-msg { font-family:'Caveat',cursive; font-size:22px; font-style:italic; color:#C0392B; margin-top:20px; text-align:center; opacity:0; }
+  .cake-scroll-hint { position:absolute; bottom:32px; font-family:'Caveat',cursive; font-size:13px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(192,57,43,0.4); opacity:0; animation:scrollHintBounce 1.5s 1s ease-in-out infinite; }
+  @keyframes scrollHintBounce { 0%,100%{transform:translateY(0);opacity:0.4} 50%{transform:translateY(5px);opacity:0.8} }
+
+  /* flower sway (kept for other uses) */
+  @keyframes sway { 0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)} }
+  @keyframes sway2 { 0%,100%{transform:rotate(2deg)} 50%{transform:rotate(-2deg)} }
+
+  /* ═══════════════════════ PAGE 8 — LOCKSCREEN GIFTS ═══════════════════════ */
+  #page8 { background:#FAFAFA; align-items:center; justify-content:center; padding:0; }
+
+  .gift-wrap-page {
+    width:390px; height:844px;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:flex-start;
+    position:relative; overflow:hidden;
+    background:#FAFAFA;
+  }
+
+  /* noise grain overlay */
+  .gift-wrap-page::before {
+    content:''; position:absolute; inset:0; pointer-events:none; z-index:1;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+  }
+
+  /* top bar */
+  .ls-topbar {
+    width:100%; display:flex; justify-content:space-between; align-items:flex-start;
+    padding:16px 20px 0; position:relative; z-index:5;
+    opacity:0;
+  }
+  .ls-topleft { font-family:'Caveat',cursive; font-size:13px; color:rgba(0,0,0,0.6); line-height:1.5; font-weight:500; }
+  .ls-topright { font-family:'Caveat',cursive; font-size:13px; color:rgba(0,0,0,0.6); text-align:right; line-height:1.5; font-weight:500; }
+
+  /* clock */
+  .ls-clock {
+    position:relative; z-index:5; text-align:center; margin-top:18px;
+    opacity:0;
+  }
+  .ls-time {
+    font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;
+    font-size:88px; font-weight:200; color:#1A1212; line-height:1;
+    letter-spacing:-3px; text-shadow:none;
+  }
+  .ls-date {
+    font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;
+    font-size:20px; font-weight:300; color:rgba(0,0,0,0.55);
+    margin-top:4px; letter-spacing:0.2px;
+  }
+
+  /* notification cards */
+  .ls-cards {
+    width:100%; padding:0 16px; margin-top:28px;
+    display:flex; flex-direction:column; gap:10px;
+    position:relative; z-index:5;
+    opacity:0;
+  }
+
+  .ls-card {
+    width:100%; background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(24px) saturate(1.5);
+    -webkit-backdrop-filter:blur(24px) saturate(1.5);
+    border-radius:16px; overflow:hidden;
+    border:1px solid rgba(0,0,0,0.08);
+    box-shadow:0 2px 16px rgba(0,0,0,0.08);
+    cursor:pointer;
+    transform:translateY(0);
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .ls-card:active { transform:scale(0.97); box-shadow:0 2px 10px rgba(0,0,0,0.06); }
+  .ls-card.opened { background:rgba(255,255,255,0.95); }
+
+  .ls-card-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px 6px;
+    border-bottom:1px solid rgba(0,0,0,0.06);
+  }
+  .ls-card-header-left { display:flex; align-items:center; gap:7px; }
+  .ls-card-app-icon {
+    width:20px; height:20px; border-radius:5px;
+    background:rgba(0,0,0,0.08);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; flex-shrink:0;
+  }
+  .ls-card-app-name {
+    font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;
+    font-size:12px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase;
+    color:rgba(0,0,0,0.45);
+  }
+  .ls-card-chevron {
+    font-size:13px; color:rgba(0,0,0,0.3);
+    font-family:-apple-system,sans-serif;
+  }
+
+  .ls-card-body { padding:10px 14px 14px; }
+  .ls-card-accent {
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .ls-card-bar {
+    width:3px; background:rgba(192,57,43,0.5); border-radius:2px;
+    align-self:stretch; flex-shrink:0; min-height:40px;
+  }
+  .ls-card-content { flex:1; }
+  .ls-card-title {
+    font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;
+    font-size:15px; font-weight:600; color:#1A1212;
+    margin-bottom:2px;
+  }
+  .ls-card-sub {
+    font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;
+    font-size:13px; font-weight:400; color:rgba(0,0,0,0.5);
+    line-height:1.4;
+  }
+  .ls-card-emoji-row { display:flex; gap:6px; margin-top:8px; font-size:18px; }
+
+  /* big emoji style (3rd card like weather) */
+  .ls-card-weather { display:flex; align-items:center; justify-content:space-between; }
+  .ls-card-weather-left { flex:1; }
+  .ls-card-weather-right {
+    font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;
+    font-size:42px; font-weight:200; color:#1A1212; letter-spacing:-1px;
+  }
+  .ls-card-icon-big { font-size:36px; margin-bottom:4px; display:block; }
+
+  /* dots at bottom */
+  .ls-dots {
+    position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:5;
+    opacity:0;
+  }
+  .ls-dot { width:6px; height:6px; border-radius:50%; background:rgba(0,0,0,0.2); }
+  .ls-dot.active { background:rgba(0,0,0,0.55); }
+
+  /* reveal overlay */
+  .gift-reveal {
+    position:absolute; inset:0; z-index:30;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:linear-gradient(160deg, rgba(232,168,124,0.97) 0%, rgba(192,57,43,0.97) 60%, rgba(139,26,58,0.98) 100%);
+    opacity:0; pointer-events:none;
+    transition:opacity 0.5s ease;
+    padding:0 36px; text-align:center;
+    backdrop-filter:blur(20px);
+  }
+  .gift-reveal.show { opacity:1; pointer-events:all; }
+  .reveal-num {
+    font-family:-apple-system,sans-serif; font-size:12px; letter-spacing:0.25em;
+    text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:16px;
+  }
+  .reveal-icon { font-size:58px; margin-bottom:16px; animation:cakeFloat 2.2s ease-in-out infinite; }
+  .reveal-title {
+    font-family:'Caveat',cursive; font-size:44px; font-weight:700;
+    color:#fff; line-height:1.1; margin-bottom:6px;
+    text-shadow:0 2px 16px rgba(0,0,0,0.15);
+  }
+  .reveal-title em { font-style:italic; color:rgba(255,220,200,1); }
+  .reveal-divider { width:32px; height:1px; background:rgba(255,255,255,0.35); margin:14px auto; }
+  .reveal-msg {
+    font-family:'Caveat',cursive; font-size:22px; font-style:italic;
+    color:rgba(255,240,230,0.9); line-height:1.65;
+  }
+  .reveal-close {
+    margin-top:30px; font-family:-apple-system,sans-serif; font-size:13px;
+    letter-spacing:0.15em; text-transform:uppercase;
+    color:rgba(255,255,255,0.5); background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.2); border-radius:20px;
+    cursor:pointer; padding:9px 22px;
+  }
+  .reveal-close:active { opacity:0.6; }
+
+  @keyframes confettiPop {
+    0%   { transform:translateY(0) scale(0) rotate(0deg); opacity:1; }
+    100% { transform:translateY(-130px) scale(1) rotate(400deg); opacity:0; }
+  }
+  .confetti-piece {
+    position:absolute; width:7px; height:7px; border-radius:2px;
+    animation:confettiPop 1.3s ease-out forwards; pointer-events:none;
+  }
+
+  /* compat stubs */
+  .gift-open-content { display:none; }
+  .gift-star { display:none; }
+  @keyframes twinkle {}
+  .gift-eyebrow,.gift-title,.gift-subtitle,.gifts-row,.gift-tap-hint { display:none; }
+  @keyframes gFloat1{} @keyframes gFloat2{} @keyframes gFloat3{}
+  .gift-item { display:none; }
+  .gift-check { display:none; }
+  @keyframes breathe{}
+
+  body::after {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:999;
+  }
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/zpcqr7.mp3" type="audio/mpeg"> 
+</audio>
+
+<!-- Settingan Page 1 -->
+<div class="page visible" id="page1">
+  <div class="center">
+    <div class="top-line"></div>
+    <span class="eyebrow">for you baby
+    </span>
+    <p class="title-main">A Little <em>Surprise</em></p>
+    <p class="sub-b">Made with Love ♡</p>
+    <div class="dot-sep"></div>
+    <p class="tap-hint">Tap to continue</p>
+    <div class="bot-line"></div>
+  </div>
+</div>
+
+<!-- Setingan Page 2 -->
+<div class="page hidden" id="page2">
+  <div class="countdown-num" id="cdNum">3</div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page hidden" id="page3">
+  <div class="grid-page">
+    <div class="grid-header" id="gridHeader">
+      <span class="grid-header-eyebrow">all about you!!!</span>
+      <div class="grid-header-dot"></div>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-cell" id="c1"><div class="photo-cell-inner"><img src="https://i.imgur.com/pmGSFBl.jpeg" alt="Foto 1"></span></div></div>
+      <div class="photo-cell" id="c2"><div class="photo-cell-inner"><img src="https://i.imgur.com/Nln92DJ.jpeg" alt="Foto 2"></span></div></div>
+      <div class="photo-cell" id="c3"><div class="photo-cell-inner"><img src="https://i.imgur.com/5NsClxu.jpeg" alt="Foto 1"></span></div></div>
+      <div class="photo-cell" id="c4"><div class="photo-cell-inner"><img src="https://i.imgur.com/dI2tcV7.jpeg" alt="Foto 1"></span></div></div>
+    </div>
+    <div class="grid-footer" id="gridFooter">
+      <span class="grid-count">my mbg ku sayang</span>
+      <button class="btn-continue" id="btnContinue">Continue <span class="btn-arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page hidden" id="page4">
+  <div class="slides-outer" id="slidesOuter">
+    <div class="slides-track" id="slidesTrack">
+      <div class="slide">
+        <div class="slide-card">
+          <div class="slide-card-photo"><div class="slide-photo-inner"><img src="https://i.imgur.com/K9XbXPE.jpeg" alt="Foto 1"></span></div></div>
+          <div class="slide-card-text">
+            <span class="slide-quote-mark">"</span>
+            <p class="slide-quote">shey, you'll never have to compete with anyone. no matter what people say, you'll always be my favorite girl.</p>
+          </div>
+        </div>
+        <div class="slide-nav">
+          <button class="nav-btn" disabled>←</button>
+          <div class="nav-dots">
+            <div class="nav-dot active" id="nd0-0"></div><div class="nav-dot" id="nd0-1"></div>
+            <div class="nav-dot" id="nd0-2"></div><div class="nav-dot" id="nd0-3"></div>
+          </div>
+          <button class="nav-btn" onclick="goSlide(1)">→</button>
+          <button class="btn-slide-final"></button>
+        </div>
+        <div class="swipe-hint">swipe →</div>
+      </div>
+      <div class="slide">
+        <div class="slide-card">
+          <div class="slide-card-photo"><div class="slide-photo-inner"><img src="https://i.imgur.com/vRlGdGn.jpeg" alt="Foto 1"></span></div></div>
+          <div class="slide-card-text">
+            <span class="slide-quote-mark">"</span>
+            <p class="slide-quote">everytime I look at youuuuu, I realize how grateful I am to have a beautiful girlll like you in my life!!!.</p>
+          </div>
+        </div>
+        <div class="slide-nav">
+          <button class="nav-btn" onclick="goSlide(0)">←</button>
+          <div class="nav-dots">
+            <div class="nav-dot" id="nd1-0"></div><div class="nav-dot active" id="nd1-1"></div>
+            <div class="nav-dot" id="nd1-2"></div><div class="nav-dot" id="nd1-3"></div>
+          </div>
+          <button class="nav-btn" onclick="goSlide(2)">→</button>
+          <button class="btn-slide-final"></button>
+        </div>
+      </div>
+      <div class="slide">
+        <div class="slide-card">
+          <div class="slide-card-photo"><div class="slide-photo-inner"><img src="https://i.imgur.com/0dkJ9l6.jpeg" alt="Foto 1"></span></div></div>
+          <div class="slide-card-text">
+            <span class="slide-quote-mark">"</span>
+            <p class="slide-quote">i will never get tired of loving you babyyyy, because loving you is my happiness.</p>
+          </div>
+        </div>
+        <div class="slide-nav">
+          <button class="nav-btn" onclick="goSlide(1)">←</button>
+          <div class="nav-dots">
+            <div class="nav-dot" id="nd2-0"></div><div class="nav-dot" id="nd2-1"></div>
+            <div class="nav-dot active" id="nd2-2"></div><div class="nav-dot" id="nd2-3"></div>
+          </div>
+          <button class="nav-btn" onclick="goSlide(3)">→</button>
+          <button class="btn-slide-final"></button>
+        </div>
+      </div>
+      <div class="slide">
+        <div class="slide-card">
+          <div class="slide-card-photo"><div class="slide-photo-inner"><img src="https://i.imgur.com/HbJvHqV.jpeg" alt="Foto 1"></span></div></div>
+          <div class="slide-card-text">
+            <span class="slide-quote-mark">"</span>
+            <p class="slide-quote">words like pretty, beautiful, gorgeous aren't enough to compliment you, you're far beyond that your beauty is just.</p>
+          </div>
+        </div>
+        <div class="slide-nav">
+          <button class="nav-btn" onclick="goSlide(2)">←</button>
+          <div class="nav-dots">
+            <div class="nav-dot" id="nd3-0"></div><div class="nav-dot" id="nd3-1"></div>
+            <div class="nav-dot" id="nd3-2"></div><div class="nav-dot active" id="nd3-3"></div>
+          </div>
+          <button class="nav-btn" disabled>→</button>
+          <button class="btn-slide-final show" onclick="goPage5()">Continue →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page hidden" id="page5">
+  <div class="closing-wrap">
+    <div class="closing-line-top"></div>
+    <span class="closing-eyebrow">from hans</span>
+    <p class="closing-title">Happy <em>Shey</em> Day ♡</p>
+    <p class="closing-sub">selamat ulang tahun ya shey ku sayang</p>
+    <div class="closing-dot"></div>
+    <button class="closing-btn" onclick="goPage6()">Continue <span>→</span></button>
+    <div class="closing-line-bot"></div>
+  </div>
+</div>
+
+<!-- PAGE 6 — CALENDAR -->
+<div class="page hidden" id="page6">
+  <div class="cal-wrap" id="calWrap">
+    <span class="cal-eyebrow" id="calEyebrow">today</span>
+    <p class="cal-heading" id="calHeading">28 <em>Mei</em> 2026</p>
+    <div class="cal-divider" id="calDivider"></div>
+    <div class="mini-cal" id="miniCal">
+      <div class="mini-cal-month">Mei 2026</div>
+      <div class="mini-cal-row">
+        <span class="cal-dow">Sen</span><span class="cal-dow">Sel</span><span class="cal-dow">Rab</span>
+        <span class="cal-dow">Kam</span><span class="cal-dow">Jum</span><span class="cal-dow">Sab</span><span class="cal-dow">Min</span>
+      </div>
+      <div class="mini-cal-row" id="calRow0">
+        <span class="cal-day muted"></span><span class="cal-day muted"></span><span class="cal-day muted"></span>
+        <span class="cal-day muted"></span><span class="cal-day" data-n="1">1</span>
+        <span class="cal-day" data-n="2">2</span><span class="cal-day" data-n="3">3</span>
+      </div>
+      <div class="mini-cal-row" id="calRow1">
+        <span class="cal-day" data-n="4">4</span><span class="cal-day" data-n="5">5</span>
+        <span class="cal-day" data-n="6">6</span><span class="cal-day" data-n="7">7</span>
+        <span class="cal-day" data-n="8">8</span><span class="cal-day" data-n="9">9</span>
+        <span class="cal-day" data-n="10">10</span>
+      </div>
+      <div class="mini-cal-row" id="calRow2">
+        <span class="cal-day" data-n="11">11</span><span class="cal-day" data-n="12">12</span>
+        <span class="cal-day" data-n="13">13</span><span class="cal-day" data-n="14">14</span>
+        <span class="cal-day" data-n="15">15</span><span class="cal-day" data-n="16">16</span>
+        <span class="cal-day" data-n="17">17</span>
+      </div>
+      <div class="mini-cal-row" id="calRow3">
+        <span class="cal-day" data-n="18">18</span><span class="cal-day" data-n="19">19</span>
+        <span class="cal-day" data-n="20">20</span><span class="cal-day" data-n="21">21</span>
+        <span class="cal-day" data-n="22">22</span><span class="cal-day" data-n="23">23</span>
+        <span class="cal-day" data-n="24">24</span>
+      </div>
+      <div class="mini-cal-row" id="calRow4">
+        <span class="cal-day" data-n="25">25</span><span class="cal-day" data-n="26">26</span>
+        <span class="cal-day" data-n="27">27</span>
+        <span class="cal-day highlight" data-n="28" id="day28">28</span>
+        <span class="cal-day" data-n="29">29</span><span class="cal-day" data-n="30">30</span>
+        <span class="cal-day" data-n="31">31</span>
+      </div>
+    </div>
+    <div class="cal-footer" id="calFooter">
+      <p class="cal-footer-line1">hari yang sangat berarti buat kamu ✦</p>
+      <p class="cal-footer-line2">selamat ulang tahun, shey ku ♡</p>
+    </div>
+    <button class="cal-continue-btn" id="calContinueBtn" onclick="goPage7()">Continue <span>→</span></button>
+  </div>
+</div>
+
+<!-- PAGE 7 — CAKE -->
+<div class="page hidden" id="page7">
+  <div class="cake-scroll-page" id="cakeScrollPage">
+
+    <!-- CAKE SECTION -->
+    <div class="cake-section" id="cakeSection">
+      <div class="cake-container">
+        <span class="cake-label" id="cakeLabel">spesial untuk sheyku</span>
+        <p class="cake-title" id="cakeTitle">Birthday <em>Cake</em></p>
+        <p class="cake-sub" id="cakeSub">bocilku sudah besarr sekarangg :p ♡</p>
+
+        <div class="cake-svg-wrap" id="cakeSvgWrap">
+          <!-- Sparkles -->
+          <span class="cake-sparkle" style="left:10px;top:40px;animation-delay:0s">✦</span>
+          <span class="cake-sparkle" style="right:8px;top:60px;animation-delay:0.7s">✦</span>
+          <span class="cake-sparkle" style="left:30px;top:20px;animation-delay:1.2s">✧</span>
+          <span class="cake-sparkle" style="right:20px;top:30px;animation-delay:0.4s">✧</span>
+          <span class="cake-sparkle" style="left:5px;top:80px;animation-delay:1.6s">✦</span>
+          <span class="cake-sparkle" style="right:5px;top:100px;animation-delay:0.9s">✦</span>
+
+          <svg class="cake-float" viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg" width="220" height="260">
+
+            <!-- ── 3 Candles ── -->
+            <!-- Candle L -->
+            <rect x="70" y="118" width="9" height="34" rx="4.5" fill="#fff" stroke="#F5CECE" stroke-width="1"/>
+            <rect x="72" y="120" width="3" height="10" rx="1.5" fill="#FADADD" opacity="0.6"/>
+            <g class="flame" style="transform-origin:74.5px 118px">
+              <ellipse cx="74.5" cy="112" rx="5" ry="8" fill="#FFD700" opacity="0.95"/>
+              <ellipse cx="74.5" cy="114" rx="3" ry="5" fill="#FF8C00" opacity="0.85"/>
+              <ellipse cx="74.5" cy="116" rx="1.8" ry="2.5" fill="#fff" opacity="0.7"/>
+            </g>
+            <!-- Candle M -->
+            <rect x="105" y="108" width="10" height="38" rx="5" fill="#fff" stroke="#F5CECE" stroke-width="1"/>
+            <rect x="107" y="110" width="3" height="12" rx="1.5" fill="#FADADD" opacity="0.6"/>
+            <g class="flame" style="transform-origin:110px 108px">
+              <ellipse cx="110" cy="102" rx="5.5" ry="9" fill="#FFD700" opacity="0.95"/>
+              <ellipse cx="110" cy="104" rx="3.5" ry="5.5" fill="#FF8C00" opacity="0.85"/>
+              <ellipse cx="110" cy="106.5" rx="2" ry="2.8" fill="#fff" opacity="0.7"/>
+            </g>
+            <!-- Candle R -->
+            <rect x="141" y="118" width="9" height="34" rx="4.5" fill="#fff" stroke="#F5CECE" stroke-width="1"/>
+            <rect x="143" y="120" width="3" height="10" rx="1.5" fill="#FADADD" opacity="0.6"/>
+            <g class="flame" style="transform-origin:145.5px 118px">
+              <ellipse cx="145.5" cy="112" rx="5" ry="8" fill="#FFD700" opacity="0.95"/>
+              <ellipse cx="145.5" cy="114" rx="3" ry="5" fill="#FF8C00" opacity="0.85"/>
+              <ellipse cx="145.5" cy="116" rx="1.8" ry="2.5" fill="#fff" opacity="0.7"/>
+            </g>
+
+            <!-- ── Cake top cream drips (white) ── -->
+            <ellipse cx="110" cy="152" rx="72" ry="11" fill="#fff"/>
+            <path d="M48,152 Q52,138 58,152" fill="#fff"/>
+            <path d="M68,152 Q72,136 78,152" fill="#fff"/>
+            <path d="M90,152 Q94,134 100,152" fill="#fff"/>
+            <path d="M118,152 Q122,134 128,152" fill="#fff"/>
+            <path d="M142,152 Q146,137 152,152" fill="#fff"/>
+            <path d="M160,152 Q164,139 170,152" fill="#fff"/>
+
+            <!-- ── Single cake body ── -->
+            <rect x="38" y="152" width="144" height="76" rx="4" fill="#fff" stroke="#F5E0E0" stroke-width="1"/>
+
+            <!-- red horizontal stripe top -->
+            <rect x="38" y="162" width="144" height="6" fill="#C0392B" opacity="0.7" rx="0"/>
+            <!-- pink stripe mid -->
+            <rect x="38" y="192" width="144" height="8" fill="#FADADD" opacity="0.85" rx="0"/>
+            <!-- red stripe bottom -->
+            <rect x="38" y="210" width="144" height="5" fill="#C0392B" opacity="0.5" rx="0"/>
+
+            <!-- red cream drips down the sides -->
+            <path d="M44,152 Q47,163 44,174" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+            <path d="M172,152 Q169,163 172,174" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+
+            <!-- heart row decoration -->
+            <text x="110" y="187" font-size="13" text-anchor="middle" fill="#C0392B" opacity="0.55" font-family="sans-serif">♡  ♡  ♡</text>
+
+            <!-- "Happy Birthday" script text -->
+            <text x="110" y="208" font-size="13" text-anchor="middle" fill="#C0392B" opacity="0.75" font-family="'Caveat',cursive" font-style="italic" font-weight="700">Happy Birthday!</text>
+
+            <!-- little red dots bottom row -->
+            <circle cx="62"  cy="220" r="3.5" fill="#C0392B" opacity="0.4"/>
+            <circle cx="82"  cy="220" r="3.5" fill="#C0392B" opacity="0.4"/>
+            <circle cx="102" cy="220" r="3.5" fill="#C0392B" opacity="0.4"/>
+            <circle cx="122" cy="220" r="3.5" fill="#C0392B" opacity="0.4"/>
+            <circle cx="142" cy="220" r="3.5" fill="#C0392B" opacity="0.4"/>
+            <circle cx="158" cy="220" r="3.5" fill="#C0392B" opacity="0.4"/>
+
+            <!-- ── Plate ── -->
+            <ellipse cx="110" cy="228" rx="80" ry="10" fill="#F5E8E8"/>
+            <ellipse cx="110" cy="228" rx="78" ry="8"  fill="#EDD8D8"/>
+            <ellipse cx="110" cy="228" rx="72" ry="5"  fill="#E8CCCC" opacity="0.5"/>
+          </svg>
+        </div>
+
+        <p class="cake-msg" id="cakeMsg">for you my favorite girl!♡</p>
+        <button class="cal-continue-btn" id="cakeContinueBtn" onclick="goPage8()" style="margin-top:28px;">Continue <span>→</span></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const reds = ['#C0392B','#E74C3C','#F1948A','#FADBD8','#D98880'];
+  const floats = ['pFloat1','pFloat2','pFloat3'];
+
+  function spawnParticles(container, count, blurred, startDelay, interval, avoidCenter) {
+    const pos = [];
+    function noOv(x,y,r) { return pos.every(p => Math.hypot(p.x-x,p.y-y) > r+p.r+10); }
+    for (let i=0;i<count;i++) {
+      (idx => setTimeout(() => {
+        const r = Math.random()*5+2.5; let x,y,t=0;
+        do { x=Math.random()*360+15; y=Math.random()*800+20; t++; }
+        while (t<60 && ((avoidCenter&&x>95&&x<295&&y>260&&y<590)||!noOv(x,y,r)));
+        pos.push({x,y,r});
+        const op = blurred ? (Math.random()*0.4+0.15) : 0.55;
+        const fn = floats[Math.floor(Math.random()*3)];
+        const fd = (2.5+Math.random()*3).toFixed(1), fde = (Math.random()*2).toFixed(1);
+        const bd = (1.8+Math.random()*2.5).toFixed(1), bde = (Math.random()*1.5).toFixed(1);
+        const el = document.createElement('div'); el.className='p';
+        el.style.cssText=`width:${r*2}px;height:${r*2}px;background:${reds[Math.floor(Math.random()*reds.length)]};left:${x-r}px;top:${y-r}px;filter:blur(${blurred?(Math.random()*5+2)+'px':'0px'});opacity:0;--op:${op};animation:${fn} ${fd}s ${fde}s infinite ease-in-out,pBlink ${bd}s ${bde}s infinite ease-in-out;`;
+        container.appendChild(el);
+        setTimeout(() => el.style.opacity=op, 30);
+      }, startDelay+idx*interval))(i);
+    }
+  }
+
+  spawnParticles(document.getElementById('page1'),38,false,400,120,true);
+
+  function spawnForPage(pageId,count,blurred) {
+    spawnParticles(document.getElementById(pageId),count,blurred,0,80,false);
+  }
+
+  // ── PAGE TRANSITIONS ──
+  let cdStarted=false;
+  function goCountdown() {
+    if (cdStarted) return; cdStarted=true;
+    const p1=document.getElementById('page1'),p2=document.getElementById('page2');
+    p1.classList.replace('visible','hidden');
+    setTimeout(() => {
+      p2.classList.replace('hidden','visible');
+      spawnForPage('page2',24,true);
+      const numEl=document.getElementById('cdNum');
+      function showNum(n) {
+        numEl.classList.remove('show','exit'); numEl.textContent=n;
+        void numEl.offsetWidth; numEl.classList.add('show');
+        setTimeout(() => { numEl.classList.add('exit'); setTimeout(() => n>1?showNum(n-1):goPhotos(),450); },900);
+      }
+      setTimeout(() => showNum(3),200);
+    },700);
+  }
+  document.getElementById('page1').addEventListener('click',goCountdown);
+
+  // ── MUSIC — starts on first tap ──
+  const music = document.getElementById('bgMusic');
+  music.volume = 0;
+  document.getElementById('page1').addEventListener('click', () => {
+    music.play().catch(() => {});
+    let vol = 0;
+    const fade = setInterval(() => {
+      vol = Math.min(vol + 0.04, 0.35);
+      music.volume = vol;
+      if (vol >= 0.35) clearInterval(fade);
+    }, 150);
+  }, { once: true });
+
+
+
+  function goPhotos() {
+    const p2=document.getElementById('page2'),p3=document.getElementById('page3');
+    p2.classList.replace('visible','hidden');
+    setTimeout(() => {
+      p3.classList.replace('hidden','visible');
+      spawnForPage('page3',22,false);
+      setTimeout(() => document.getElementById('gridHeader').classList.add('show'),200);
+      ['c1','c2','c3','c4'].forEach((id,i) => setTimeout(() => document.getElementById(id).classList.add('show'),400+i*280));
+      setTimeout(() => document.getElementById('gridFooter').classList.add('show'),400+4*280+150);
+    },700);
+  }
+
+  document.getElementById('btnContinue').addEventListener('click',() => {
+    const p3=document.getElementById('page3'),p4=document.getElementById('page4');
+    p3.classList.replace('visible','hidden');
+    setTimeout(() => { p4.classList.replace('hidden','visible'); spawnForPage('page4',26,false); },700);
+  });
+
+  function goPage5() {
+    const p4=document.getElementById('page4'),p5=document.getElementById('page5');
+    p4.classList.replace('visible','hidden');
+    setTimeout(() => { p5.classList.replace('hidden','visible'); spawnForPage('page5',28,false); },700);
+  }
+
+  function goPage6() {
+    const p5=document.getElementById('page5'),p6=document.getElementById('page6');
+    p5.classList.replace('visible','hidden');
+    setTimeout(() => {
+      p6.classList.replace('hidden','visible');
+      spawnForPage('page6',20,false);
+      animateCalendar();
+    },700);
+  }
+
+  // ── CALENDAR ANIMATION ──
+  function animateCalendar() {
+    const eyebrow = document.getElementById('calEyebrow');
+    const heading = document.getElementById('calHeading');
+    const divider = document.getElementById('calDivider');
+    const miniCal = document.getElementById('miniCal');
+    const footer  = document.getElementById('calFooter');
+    const contBtn = document.getElementById('calContinueBtn');
+
+    // fade in header elements
+    setTimeout(() => { eyebrow.style.transition='opacity 0.6s ease, transform 0.6s ease'; eyebrow.style.transform='translateY(0)'; eyebrow.style.opacity='1'; }, 200);
+    setTimeout(() => { heading.style.transition='opacity 0.7s ease, transform 0.7s ease'; heading.style.transform='translateY(0)'; heading.style.opacity='1'; }, 450);
+    setTimeout(() => { divider.style.transition='opacity 0.5s ease'; divider.style.opacity='1'; }, 700);
+    setTimeout(() => { miniCal.style.transition='opacity 0.5s ease'; miniCal.style.opacity='1'; }, 850);
+
+    // animate each day cell one by one
+    const allDays = document.querySelectorAll('.cal-day');
+    let delay = 950;
+    const dayInterval = 55;
+
+    allDays.forEach((day, i) => {
+      const n = parseInt(day.getAttribute('data-n'));
+      setTimeout(() => {
+        if (n === 28) {
+          // special 28 — bigger pop with delay after others settle
+          setTimeout(() => {
+            day.classList.add('appear');
+            spawnSparkles28(day);
+          }, 200);
+        } else {
+          day.classList.add('appear');
+        }
+      }, delay + i * dayInterval);
+    });
+
+    const totalDayTime = delay + allDays.length * dayInterval + 800;
+    setTimeout(() => {
+      footer.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+      footer.style.transform = 'translateY(0)';
+      footer.style.opacity = '1';
+    }, totalDayTime);
+    setTimeout(() => { contBtn.classList.add('show'); }, totalDayTime + 400);
+  }
+
+  function spawnSparkles28(dayEl) {
+    const parent = dayEl.closest('.cal-wrap');
+    const rect = dayEl.getBoundingClientRect();
+    const parentRect = parent.getBoundingClientRect();
+    const cx = rect.left - parentRect.left + rect.width/2;
+    const cy = rect.top  - parentRect.top  + rect.height/2;
+
+    const angles = [0,45,90,135,180,225,270,315];
+    angles.forEach((angle, i) => {
+      setTimeout(() => {
+        const rad = angle * Math.PI / 180;
+        const dist = 30 + Math.random() * 20;
+        const dot = document.createElement('div');
+        dot.style.cssText = `
+          position:absolute; width:5px; height:5px; border-radius:50%;
+          background:${Math.random()>0.5?'#C0392B':'#FFD700'};
+          left:${cx}px; top:${cy}px; z-index:5; pointer-events:none;
+          transition: transform 0.6s ease, opacity 0.6s ease;
+          opacity:1;
+        `;
+        parent.appendChild(dot);
+        requestAnimationFrame(() => {
+          dot.style.transform = `translate(${Math.cos(rad)*dist - 2.5}px, ${Math.sin(rad)*dist - 2.5}px)`;
+          setTimeout(() => { dot.style.opacity='0'; setTimeout(() => dot.remove(), 600); }, 50);
+        });
+      }, i * 40);
+    });
+
+    // extra gold stars
+    ['✦','✧','★'].forEach((ch, i) => {
+      setTimeout(() => {
+        const star = document.createElement('span');
+        star.textContent = ch;
+        const dx = (Math.random()-0.5)*60;
+        const dy = -(Math.random()*40+20);
+        star.style.cssText = `
+          position:absolute; font-size:14px; color:#FFD700;
+          left:${cx+dx}px; top:${cy-10}px; z-index:5; pointer-events:none;
+          opacity:1; transition:transform 1s ease, opacity 1s ease;
+        `;
+        parent.appendChild(star);
+        requestAnimationFrame(() => {
+          star.style.transform = `translateY(${dy}px)`;
+          star.style.opacity = '0';
+          setTimeout(() => star.remove(), 1100);
+        });
+      }, i * 150);
+    });
+  }
+
+  // ── PAGE 7 ──
+  function goPage7() {
+    const p6=document.getElementById('page6'),p7=document.getElementById('page7');
+    p6.classList.replace('visible','hidden');
+    setTimeout(() => {
+      p7.classList.replace('hidden','visible');
+      animateCakePage();
+    },700);
+  }
+
+  function animateCakePage() {
+    const els = [
+      {id:'cakeLabel', delay:200},
+      {id:'cakeTitle', delay:500},
+      {id:'cakeSub',   delay:800},
+      {id:'cakeSvgWrap', delay:1100},
+      {id:'cakeMsg',   delay:1600},
+    ];
+    els.forEach(({id,delay}) => {
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        el.style.transition='opacity 0.7s ease, transform 0.7s ease';
+        el.style.opacity='1'; el.style.transform='translateY(0)';
+      }, delay);
+    });
+  }
+
+  function animateGiftPage() {
+    const seq=[
+      {id:'lsCards',   delay:300},
+      {id:'lsDots',    delay:800},
+    ];
+    seq.forEach(({id,delay}) => {
+      setTimeout(() => {
+        const el=document.getElementById(id);
+        el.style.transition='opacity 0.8s ease, transform 0.8s ease';
+        el.style.opacity='1'; el.style.transform='translateY(0)';
+      },delay);
+    });
+  }
+
+  function openGift(n) {
+    const cardId = 'lsCard'+n;
+    const btn = document.getElementById(cardId);
+    if (btn && btn.classList.contains('opened')) return;
+    if (btn) btn.classList.add('opened');
+
+    const page = document.getElementById('giftWrapPage');
+    // confetti burst
+    const colors=['#C0392B','#E74C3C','#FFD700','#fff','#F1948A','#FADADD'];
+    for(let i=0;i<28;i++) {
+      const piece=document.createElement('div'); piece.className='confetti-piece';
+      const bx = btn ? btn.getBoundingClientRect() : {left:195,top:400,width:0,height:0};
+      const pgRect = page.getBoundingClientRect();
+      const cx = bx.left + bx.width/2 - pgRect.left;
+      const cy = bx.top + bx.height/2 - pgRect.top;
+      const x = cx + (Math.random()-0.5)*100;
+      const y = cy + (Math.random()-0.5)*60;
+      const rot=Math.random()*360;
+      const color=colors[Math.floor(Math.random()*colors.length)];
+      const shapes=['2px','50%','0'];
+      piece.style.cssText=`left:${x}px;top:${y}px;background:${color};transform:rotate(${rot}deg);border-radius:${shapes[Math.floor(Math.random()*3)]};animation-delay:${Math.random()*0.2}s;`;
+      page.appendChild(piece);
+      setTimeout(()=>piece.remove(),1500);
+    }
+
+    // show reveal panel
+    const d = giftData[n-1];
+    document.getElementById('revealNum').textContent = d.num;
+    document.getElementById('revealIcon').textContent = d.icon;
+    document.getElementById('revealTitle').innerHTML = d.title.replace(/(\S+)$/, '<em>$1</em>');
+    document.getElementById('revealMsg').textContent = d.msg;
+    setTimeout(() => {
+      document.getElementById('giftReveal').classList.add('show');
+    }, 300);
+  }
+
+  function closeReveal() {
+    document.getElementById('giftReveal').classList.remove('show');
+  }
+
+  // slide nav
+  let cur=0;
+  const track=document.getElementById('slidesTrack');
+  function goSlide(n) {
+    cur=Math.max(0,Math.min(3,n));
+    track.style.transform=`translateX(${-390*cur}px)`;
+    for(let s=0;s<4;s++) for(let d=0;d<4;d++) {
+      const el=document.getElementById(`nd${s}-${d}`);
+      if(el) el.classList.toggle('active',d===cur);
+    }
+  }
+  let tx=0,dragging=false;
+  const outer=document.getElementById('slidesOuter');
+  outer.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;dragging=true;},{passive:true});
+  outer.addEventListener('touchend',e=>{if(!dragging)return;dragging=false;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40) dx<0?goSlide(cur+1):goSlide(cur-1);},{passive:true});
+  let mx=0,md=false;
+  outer.addEventListener('mousedown',e=>{mx=e.clientX;md=true;});
+  window.addEventListener('mouseup',e=>{if(!md)return;md=false;const dx=e.clientX-mx;if(Math.abs(dx)>40) dx<0?goSlide(cur+1):goSlide(cur-1);});
+</script>
+</body>
+</html>
